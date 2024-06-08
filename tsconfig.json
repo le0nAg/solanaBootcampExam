@@ -1,0 +1,14 @@
+{
+
+  "compilerOptions": {
+    "module": "commonjs", // Use "esnext" if you're using ES modules
+    "target": "es6",      // Target modern JavaScript
+    "outDir": "./dist",   // Output directory for compiled JavaScript
+    "rootDir": "./src",   // Root directory of TypeScript files
+    "strict": true,       // Enable strict type checking
+    "esModuleInterop": true // Allow ES module interop
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules"]
+  
+}

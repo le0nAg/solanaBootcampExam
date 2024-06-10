@@ -17,27 +17,25 @@ console.log(`The source wallet: ${srcKeypair.publicKey.toBase58()} was generated
 const dstKeypair = Keypair.generate();
 console.log(`The destination wallet: ${dstKeypair.publicKey.toBase58()} was generated`);
 
-const connection = new Connection("https://api.devnet.solana.com", "finalized");
+const connection = new Connection("https://api.devnet.solana.com", "confirmed");
 
 // Function to request an airdrop with retries
-async function requestAirdropWithRetry(publicKey: PublicKey, amount: number, retries = 5) {
-    for (let attempt = 1; attempt <= retries; attempt++) {
-        try {
+async function requestAirdropWithRetry(publicKey: PublicKey, amount: number) {
+    console.log("air drop req: " + amount);    
+    try {
             const airdropSignature = await connection.requestAirdrop(publicKey, amount);
             console.log(`Success! Check out your TX here: https://explorer.solana.com/tx/${airdropSignature}?cluster=devnet`);
             return;
         } catch (error) {
-            if (attempt === retries) {
-                throw new Error('Airdrop failed after maximum retries');
-            }
+            console.log(error);
         }
-    }
 }
 
 (async () => {
     try {
         // Request airdrop
-        await requestAirdropWithRetry(srcKeypair.publicKey, 1 * LAMPORTS_PER_SOL);
+        await requestAirdropWithRetry(srcKeypair.publicKey, 2 * LAMPORTS_PER_SOL);
+        await requestAirdropWithRetry(dstKeypair.publicKey, 2 * LAMPORTS_PER_SOL);
 
         // Mint creation
         const mintPk = await createMint(
@@ -84,7 +82,7 @@ async function requestAirdropWithRetry(publicKey: PublicKey, amount: number, ret
         const dstAta = dstTokenAccount.address;
         console.log("Destination Associated Token Account: ", dstAta.toBase58());
 
-        const transferAmount = 10e5;
+        const transferAmount = 10e3;
 
         await transfer(
             connection,
